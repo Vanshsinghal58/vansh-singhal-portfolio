@@ -1,29 +1,64 @@
-# Welcome to your Lovable project
+# Vansh-Singhal-Portfolio
 
-This project was built with [Lovable](https://lovable.dev).
+A modern web application developed using **React, TypeScript, Tailwind CSS, and TanStack Start**.
 
-## Build with Lovable
+## About the Project
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+This project was designed and developed as a custom web application with a focus on a clean user interface, responsive design, and efficient performance.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+The application is built using modern web development technologies and follows a structured, maintainable codebase.
 
-## Development
+## Developer
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+**Developed by:** Vansh Singhal
 
-```sh
-git clone <this-repository-url>
+## Technologies Used
+
+* **React** – Frontend UI development
+* **TypeScript** – Type-safe JavaScript development
+* **TanStack Start** – Application framework
+* **Tailwind CSS** – Styling and responsive design
+* **Node.js & npm** – Development environment and package management
+
+## Features
+
+* Responsive and modern user interface
+* Component-based React architecture
+* TypeScript-based development
+* Responsive styling with Tailwind CSS
+* Fast and maintainable application structure
+
+## Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
 cd <repository-name>
-npm i
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Start the Development Server
+
+```bash
 npm run dev
 ```
 
-## Built with
+The application will then be available on the local development server.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Project Structure
+
+The project follows a modular structure with reusable React components, pages, and supporting files to make the application easier to maintain and extend.
+
+## Development
+
+This project is actively developed and can be extended with additional features, improvements, and integrations as required.
+
+## License
+
+This project was developed for educational/project purposes.
