@@ -49,13 +49,14 @@ const skills = [
   { name: "HTML5 / CSS3", level: 90 },
   { name: "JavaScript", level: 80 },
   { name: "Python (Pandas, NumPy)", level: 78 },
+  { name: "Java", level: 70 },
   { name: "Data Analysis & Visualization", level: 75 },
   { name: "Git & GitHub", level: 72 },
   { name: "React (learning)", level: 45 },
 ];
 
 const skillGroups = [
-  { title: "Languages", items: ["Python", "JavaScript", "C"] },
+  { title: "Languages", items: ["Python", "JavaScript", "Java", "C"] },
   { title: "Web & Frontend", items: ["HTML5", "CSS3", "Responsive UI", "React (learning)"] },
   { title: "Data & Analytics", items: ["Pandas", "NumPy", "EDA", "Visualization"] },
   { title: "Core CS & Tools", items: ["DSA", "OOPs", "DBMS", "Git", "VS Code"] },
