@@ -324,8 +324,8 @@ function Portfolio() {
               { Icon: Phone, label: "+91 93685 69020", href: "tel:+919368569020" },
               {
                 Icon: Linkedin,
-                label: "linkedin.com/in/vanshsinghal",
-                href: "https://linkedin.com/in/vanshsinghal",
+                label: "linkedin.com/in/vansh-singhal-a140801a8/",
+                href: "https://www.linkedin.com/in/vansh-singhal-a140801a8/",
               },
               { Icon: MapPin, label: "Meerut, Uttar Pradesh", href: undefined },
             ].map(({ Icon, label, href }) => {
