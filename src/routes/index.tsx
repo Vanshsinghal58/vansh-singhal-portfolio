@@ -1,5 +1,3 @@
-import profileImage from "@/assets/vansh-singhal-profile.jpg";
-
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Mail,
@@ -11,17 +9,12 @@ import {
   Sprout,
   LineChart,
   BadgeCheck,
+  Code2,
 } from "lucide-react";
-import profileAsset from "@/assets/vansh-singhal-portrait.jpg.asset.json";
-const avatar = profileImage;
-<img
-  src={avatar}
-  alt="Neon portrait of Vansh Singhal"
-  width={768}
-  height={768}
-  className="mx-auto h-32 w-32 rounded-full object-cover neon-ring ring-1 ring-border"
-/>
+const avatar = "/profile.jpg";
 import { SideRail } from "@/components/SideRail";
+import { Reveal } from "@/components/Reveal";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,7 +42,7 @@ const skills = [
   { name: "HTML5 / CSS3", level: 90 },
   { name: "JavaScript", level: 80 },
   { name: "Python (Pandas, NumPy)", level: 78 },
-  { name: "Java", level: 70 },
+  { name: "Java", level: 60 },
   { name: "Data Analysis & Visualization", level: 75 },
   { name: "Git & GitHub", level: 72 },
   { name: "React (learning)", level: 45 },
@@ -112,9 +105,105 @@ const certifications = [
 
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
-    <div className="mb-8">
+    <Reveal className="mb-8">
       <p className="text-xs uppercase tracking-[0.35em] text-neon-soft">{eyebrow}</p>
-      <h2 className="mt-2 text-3xl font-bold text-neon-gradient sm:text-4xl">{title}</h2>
+      <h2 className="mt-2 text-3xl font-bold text-neon-gradient-anim sm:text-4xl">{title}</h2>
+    </Reveal>
+  );
+}
+
+function useCountUp(target: number, duration = 1200, start = false) {
+  const [value, setValue] = useState(0);
+  const startTime = useRef<number | null>(null);
+  const raf = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!start) {
+      setValue(0);
+      return;
+    }
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    const step = (ts: number) => {
+      if (startTime.current === null) startTime.current = ts;
+      const progress = Math.min((ts - startTime.current) / duration, 1);
+      setValue(Math.round(easeOutCubic(progress) * target));
+      if (progress < 1) {
+        raf.current = requestAnimationFrame(step);
+      }
+    };
+    raf.current = requestAnimationFrame(step);
+    return () => {
+      if (raf.current) cancelAnimationFrame(raf.current);
+      startTime.current = null;
+    };
+  }, [start, target, duration]);
+
+  return value;
+}
+
+function AnimatedPercent({ level }: { level: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [shown, setShown] = useState(false);
+  const count = useCountUp(level, 1400, shown);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setShown(true);
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.25, rootMargin: "0px 0px -40px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return <span ref={ref}>{count}%</span>;
+}
+
+function SkillBar({ level, delay = 0 }: { level: number; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            timer = setTimeout(() => setShown(true), delay);
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.25, rootMargin: "0px 0px -40px 0px" },
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      if (timer) clearTimeout(timer);
+    };
+  }, [delay]);
+
+  return (
+    <div ref={ref} className="mt-3 h-2 w-full overflow-hidden rounded-full bg-surface-2">
+      <div
+        className="skill-bar h-full rounded-full neon-ring"
+        style={{
+          width: shown ? `${level}%` : "0%",
+          background: "var(--gradient-neon)",
+          transitionDelay: `${delay}ms`,
+        }}
+      />
+      <span className="sr-only">{level}% proficiency</span>
     </div>
   );
 }
@@ -127,35 +216,49 @@ function Portfolio() {
       <main className="mx-auto max-w-5xl px-5 pb-24 pl-20 md:pl-28">
         {/* Hero */}
         <section id="home" className="flex min-h-screen items-center py-20">
-          <div className="panel glow-edge w-full px-6 py-14 text-center sm:px-12">
-            <img
-              src={avatar}
-              alt="Neon portrait of Vansh Singhal"
-              width={768}
-              height={768}
-              className="mx-auto h-32 w-32 rounded-full object-cover neon-ring ring-1 ring-border"
-            />
-            <h1 className="mt-8 text-4xl font-bold sm:text-6xl">
-              Hi, I&apos;m <span className="text-neon-gradient">Vansh</span>
+          <div className="panel glow-edge animate-rise w-full px-6 py-14 text-center sm:px-12">
+            <div className="float-slow">
+              <img
+                src={avatar}
+                alt="Neon portrait of Vansh Singhal"
+                width={768}
+                height={768}
+                className="pulse-glow mx-auto h-32 w-32 rounded-full object-cover ring-1 ring-border"
+              />
+            </div>
+            <h1
+              className="animate-rise mt-8 text-4xl font-bold sm:text-6xl"
+              style={{ animationDelay: "150ms" }}
+            >
+              Hi, I&apos;m <span className="text-neon-gradient-anim">Vansh</span>
             </h1>
-            <p className="mt-3 text-lg text-neon-soft sm:text-xl">
+            <p
+              className="animate-rise mt-3 text-lg text-neon-soft sm:text-xl"
+              style={{ animationDelay: "280ms" }}
+            >
               Frontend Developer &amp; Data Analytics Enthusiast
             </p>
-            <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <p
+              className="animate-rise mx-auto mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base"
+              style={{ animationDelay: "400ms" }}
+            >
               B.Tech CSE (AI) student at MIET Meerut. I build responsive, user-facing web
               interfaces and turn raw data into insight with Python — end to end, from UI to
               pipeline.
             </p>
-            <div className="mt-9 flex flex-wrap justify-center gap-3">
+            <div
+              className="animate-rise mt-9 flex flex-wrap justify-center gap-3"
+              style={{ animationDelay: "520ms" }}
+            >
               <a
                 href="#projects"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.03] neon-ring"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.05] hover:-translate-y-0.5 neon-ring"
               >
-                View My Work <ArrowUpRight className="h-4 w-4" />
+                View My Work <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </a>
               <a
                 href="mailto:vanshsinghal588@gmail.com"
-                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-secondary"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-all hover:-translate-y-0.5 hover:bg-secondary"
               >
                 <Download className="h-4 w-4" /> Get in Touch
               </a>
@@ -166,7 +269,7 @@ function Portfolio() {
         {/* About */}
         <section id="about" className="scroll-mt-20 py-16">
           <SectionTitle eyebrow="Profile" title="About Me" />
-          <div className="panel glow-edge p-7 sm:p-9">
+          <Reveal variant="up" className="panel glow-edge lift p-7 sm:p-9">
             <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
               I&apos;m comfortable working across a project end to end — from interface to data
               pipeline — and quick to pick up new tools without hand-holding. Business Analytics
@@ -180,14 +283,19 @@ function Portfolio() {
                 ["Graduating", "2027"],
                 ["CGPA", "7.5 / 10"],
                 ["Shipped Projects", "2"],
-              ].map(([k, v]) => (
-                <div key={k} className="rounded-xl border border-border bg-surface-2/60 p-4">
+              ].map(([k, v], idx) => (
+                <Reveal
+                  key={k}
+                  variant="zoom"
+                  delay={idx * 120}
+                  className="lift rounded-xl border border-border bg-surface-2/60 p-4"
+                >
                   <dt className="text-xs uppercase tracking-widest text-muted-foreground">{k}</dt>
                   <dd className="mt-1 text-2xl font-bold text-neon">{v}</dd>
-                </div>
+                </Reveal>
               ))}
             </dl>
-          </div>
+          </Reveal>
         </section>
 
         {/* Skills */}
@@ -196,40 +304,52 @@ function Portfolio() {
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="panel glow-edge p-7">
               <ul className="space-y-5">
-                {skills.map((s) => (
-                  <li key={s.name}>
-                    <div className="flex items-baseline justify-between text-sm">
-                      <span>{s.name}</span>
-                      <span className="text-xs text-muted-foreground">{s.level}%</span>
-                    </div>
-                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
-                      <div
-                        className="h-full rounded-full neon-ring"
-                        style={{
-                          width: `${s.level}%`,
-                          background: "var(--gradient-neon)",
-                        }}
-                      />
-                    </div>
-                  </li>
+                {skills.map((s, idx) => (
+                  <Reveal
+                    key={s.name}
+                    variant="left"
+                    delay={idx * 100}
+                    className="group"
+                  >
+                    <li className="flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-neon transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                        <Code2 className="h-4 w-4" strokeWidth={1.75} />
+                      </span>
+                      <div className="flex-1">
+                        <div className="flex items-baseline justify-between text-sm">
+                          <span className="transition-colors group-hover:text-neon">{s.name}</span>
+                          <span className="skill-level text-xs font-medium text-muted-foreground transition-colors group-hover:text-neon">
+                            <AnimatedPercent level={s.level} />
+                          </span>
+                        </div>
+                        <SkillBar level={s.level} delay={idx * 100} />
+                      </div>
+                    </li>
+                  </Reveal>
                 ))}
               </ul>
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
-              {skillGroups.map((g) => (
-                <div key={g.title} className="panel glow-edge p-5">
+              {skillGroups.map((g, gIdx) => (
+                <Reveal
+                  key={g.title}
+                  variant="right"
+                  delay={gIdx * 110}
+                  className="panel glow-edge lift p-5"
+                >
                   <h3 className="text-sm font-semibold text-neon">{g.title}</h3>
                   <ul className="mt-3 flex flex-wrap gap-2">
-                    {g.items.map((i) => (
+                    {g.items.map((i, iIdx) => (
                       <li
                         key={i}
-                        className="rounded-full border border-border bg-surface-2/70 px-3 py-1 text-xs text-muted-foreground"
+                        className="skill-chip rounded-full border border-border bg-surface-2/70 px-3 py-1 text-xs text-muted-foreground hover:border-neon hover:text-neon"
+                        style={{ animationDelay: `${gIdx * 110 + iIdx * 60}ms` }}
                       >
                         {i}
                       </li>
                     ))}
                   </ul>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -239,9 +359,15 @@ function Portfolio() {
         <section id="projects" className="scroll-mt-20 py-16">
           <SectionTitle eyebrow="Selected Work" title="My Portfolio" />
           <div className="grid gap-5 md:grid-cols-2">
-            {projects.map(({ title, stack, points, Icon }) => (
-              <article key={title} className="panel glow-edge flex flex-col p-7">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-neon neon-ring">
+            {projects.map(({ title, stack, points, Icon }, idx) => (
+              <Reveal
+                as="article"
+                key={title}
+                variant="up"
+                delay={idx * 140}
+                className="panel glow-edge lift group flex flex-col p-7"
+              >
+                <span className="pulse-glow inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-neon transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110">
                   <Icon className="h-5 w-5" strokeWidth={1.75} />
                 </span>
                 <h3 className="mt-5 text-xl font-semibold">{title}</h3>
@@ -257,13 +383,13 @@ function Portfolio() {
                   {stack.map((s) => (
                     <li
                       key={s}
-                      className="rounded-full border border-border px-3 py-1 text-xs text-neon-soft"
+                      className="rounded-full border border-border px-3 py-1 text-xs text-neon-soft transition-all hover:-translate-y-0.5 hover:border-neon"
                     >
                       {s}
                     </li>
                   ))}
                 </ul>
-              </article>
+              </Reveal>
             ))}
           </div>
         </section>
@@ -272,21 +398,24 @@ function Portfolio() {
         <section id="education" className="scroll-mt-20 py-16">
           <SectionTitle eyebrow="Background" title="Education & Certifications" />
           <div className="grid gap-5 lg:grid-cols-2">
-            <div className="panel glow-edge p-7">
+            <Reveal variant="left" className="panel glow-edge lift p-7">
               <h3 className="text-sm font-semibold uppercase tracking-widest text-neon">
                 Education
               </h3>
               <ul className="mt-5 space-y-4">
                 {education.map((e) => (
-                  <li key={e.title} className="rounded-xl border border-border bg-surface-2/60 p-4">
+                  <li
+                    key={e.title}
+                    className="rounded-xl border border-border bg-surface-2/60 p-4 transition-all hover:-translate-y-0.5 hover:border-neon/60"
+                  >
                     <p className="text-sm font-medium">{e.title}</p>
                     <p className="mt-1 text-xs text-muted-foreground">{e.org}</p>
                     <p className="mt-2 text-xs text-neon-soft">{e.meta}</p>
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="panel glow-edge p-7">
+            </Reveal>
+            <Reveal variant="right" delay={120} className="panel glow-edge lift p-7">
               <h3 className="text-sm font-semibold uppercase tracking-widest text-neon">
                 Certifications
               </h3>
@@ -294,7 +423,7 @@ function Portfolio() {
                 {certifications.map((c) => (
                   <li
                     key={c.title}
-                    className="flex items-start gap-3 rounded-xl border border-border bg-surface-2/60 p-4"
+                    className="flex items-start gap-3 rounded-xl border border-border bg-surface-2/60 p-4 transition-all hover:-translate-y-0.5 hover:border-neon/60"
                   >
                     <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-neon" strokeWidth={1.75} />
                     <div>
@@ -307,14 +436,14 @@ function Portfolio() {
               <p className="mt-5 text-xs text-muted-foreground">
                 Participated in inter-college coding and problem-solving competitions.
               </p>
-            </div>
+            </Reveal>
           </div>
         </section>
 
         {/* Contact */}
         <section id="contact" className="scroll-mt-20 py-16">
           <SectionTitle eyebrow="Say Hello" title="Let's Build Something" />
-          <div className="panel glow-edge grid gap-4 p-7 sm:grid-cols-2">
+          <Reveal variant="zoom" className="panel glow-edge grid gap-4 p-7 sm:grid-cols-2">
             {[
               {
                 Icon: Mail,
@@ -341,7 +470,7 @@ function Portfolio() {
                   href={href}
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel="noreferrer"
-                  className="flex items-center gap-3 rounded-xl border border-border bg-surface-2/60 p-4 transition-colors hover:bg-secondary"
+                  className="flex items-center gap-3 rounded-xl border border-border bg-surface-2/60 p-4 transition-all hover:-translate-y-0.5 hover:border-neon/60 hover:bg-secondary"
                 >
                   {content}
                 </a>
@@ -354,7 +483,7 @@ function Portfolio() {
                 </div>
               );
             })}
-          </div>
+          </Reveal>
           <p className="mt-10 text-center text-xs text-muted-foreground">
             © {new Date().getFullYear()} Vansh Singhal
           </p>
