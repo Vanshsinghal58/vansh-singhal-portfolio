@@ -452,7 +452,7 @@ function Portfolio() {
               {[
                 ["Graduating", "2027"],
                 ["CGPA", "7.5 / 10"],
-                ["Shipped Projects", "2"],
+                ["Shipped Projects", "3"],
               ].map(([k, v], idx) => (
                 <Reveal
                   key={k}
