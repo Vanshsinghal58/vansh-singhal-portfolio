@@ -98,6 +98,20 @@ const projects = [
       "Visualizations communicating trends and model accuracy as actionable insight.",
     ],
   },
+    {
+    title: "fake-mail-detection-system",
+    stack: ["Python, Pandas, NumPy, Scikit-learn, Joblib, Streamlitt"],
+    Icon: Code2,
+
+    // LIVE PROJECT LINK ADDED HERE
+    link: "https://fake-mail-detection-system-duchk7jc5zbnz8ucjyzwyh.streamlit.app/",
+
+    points: [
+      "Built an end-to-end spam/phishing email classifier using TF-IDF vectorization and Logistic Regression, distinguishing spam, legitimate, and suspicious emails.",
+      "Engineered heuristic phishing signals and suspicious-word analysis alongside the ML model to flag spam and HAM probability scores.",
+      "Structured the project with separate data generation, preprocessing, and model training pipelines, and deployed an interactive Streamlit web interface for real-time classification.",
+    ],
+  },
 ];
 
 const education = [
